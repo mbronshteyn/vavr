@@ -29,5 +29,16 @@ public class OptionTest {
         assertEquals("baeldung", nameOption.getOrElse("baeldung"));
     }
 
-    
+    /*
+    Testing with non-null
+     */
+    @Test
+    public void givenNonNull_whenCreatesOption_thenCorrect() {
+        String name = "baeldung";
+        Option<String> nameOption = Option.of(name);
+
+        assertEquals("baeldung", nameOption.getOrElse("notbaeldung"));
+    }
+
+
 }
