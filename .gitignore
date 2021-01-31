@@ -12,7 +12,7 @@
 
 .idea/
 
-.target/
+target/
 
 *.iml
 
