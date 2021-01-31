@@ -15,7 +15,7 @@ public class FunctionTest {
 
         Function1<Integer, Integer> add1AndMultiplyBy2 = plusOne.andThen(multiplyByTwo);
 
-        System.out.println(add1AndMultiplyBy2.apply(2));
+        Assert.assertEquals(add1AndMultiplyBy2.apply(2).intValue(), 6);
     }
 
     // Lifting
@@ -28,18 +28,18 @@ public class FunctionTest {
 
         // = None
         Option<Integer> i1 = safeDivide.apply(1, 0);
-        System.out.printf( "None: %s\n",i1.toString());
+        Assert.assertEquals(i1, Option.none());
 
         // = Some(2)
         Option<Integer> i2 = safeDivide.apply(4, 2);
-        System.out.printf("Some: %s\n\n", i2.get());
+        Assert.assertEquals(i2, Option.of(2));
 
         // Catch IllegalArgumentException
         Function2<Integer, Integer, Option<Integer>> sum = Function2.lift(this::sum);
 
         // = None
         Option<Integer> optionalResult = sum.apply(-1, 2);
-        System.out.println(optionalResult.toString());
+        Assert.assertEquals(optionalResult.toString(), "None");
     }
 
     int sum(int first, int second) {
@@ -47,5 +47,13 @@ public class FunctionTest {
             throw new IllegalArgumentException("Only positive integers are allowed");
         }
         return first + second;
+    }
+
+    @Test
+    public void partialApplication(){
+        Function2<Integer, Integer, Integer> sum = (a, b) -> a + b;
+        Function1<Integer, Integer> add2 = sum.apply(2);
+
+        Assert.assertEquals(add2.apply(4).intValue(), 6L);
     }
 }
