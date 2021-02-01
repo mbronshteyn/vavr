@@ -1,6 +1,7 @@
 package com.mbronshteyn.vavr;
 
 import io.vavr.Lazy;
+import io.vavr.control.Either;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.junit.Assert;
@@ -74,9 +75,41 @@ public class ValuesTest {
         double secondTry = lazy.get();         // = 0.123 (memoized)
         Assert.assertEquals(firstTry, secondTry, 0.0001);
 
-
         // since ver. 2.0.0
         CharSequence chars = Lazy.val(() -> "Yay!", CharSequence.class);
         Assert.assertEquals(chars.charAt(0), 'Y');
+    }
+
+    /*
+    Either represents a value of two possible types.
+    An Either is either a Left or a Right. If the given Either is a Right and projected to a Left,
+    the Left operations have no effect on the Right value.
+    If the given Either is a Left and projected to a Right,
+    the Right operations have no effect on the Left value.
+    If a Left is projected to a Left or a Right is projected to a Right, the operations have an effect.
+
+    Example: A compute() function, which results either in an Integer value (in the case of success)
+    or in an error message of type String (in the case of failure).
+    By convention the success case is Right and the failure is Left.
+     */
+    @Test
+    public void EitherTest(){
+        Either<String,Integer> value = compute(0).right().map(i -> i * 2).toEither();
+        if( value.isRight() ){
+            Assert.assertEquals( value.right().get().longValue(), 0 );
+        }
+
+        value = compute(1).right().map(i -> i * 2).toEither();
+        if( value.isLeft() ){
+            Assert.assertEquals( value.getLeft(), "Error" );
+        }
+    }
+
+    public Either<String, Integer> compute(int i) {
+        if (i == 0) {
+            return Either.right(0);
+        } else {
+            return Either.left("Error");
+        }
     }
 }
